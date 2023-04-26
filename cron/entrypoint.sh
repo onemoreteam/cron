@@ -8,4 +8,4 @@ echo "${JOB}" > $FILE
 
 for i in $(seq 0 9); do eval echo \"\${JOB$i}\" >> /var/spool/cron/crontabs/$(whoami); done
 
-exec "$@"
+exec /sbin/tini -- $@
