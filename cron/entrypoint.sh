@@ -2,10 +2,11 @@
 
 env >> /etc/environment
 
-FILE="/var/spool/cron/crontabs/$(whoami)"
+CRONTAB="/var/spool/cron/crontabs/$(whoami)"
 
-echo "${JOB}" > $FILE
+cat /dev/null > $CRONTAB
 
-for i in $(seq 0 9); do eval echo \"\${JOB$i}\" >> /var/spool/cron/crontabs/$(whoami); done
+env | while IFS='=' read -r K V; do [ $(echo $K|cut -b-8) = "CRON_JOB" ] && echo -e "# $K\n$V" >> $CRONTAB; done
 
 exec /sbin/tini -- $@
+
